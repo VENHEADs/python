@@ -17,3 +17,4 @@ res = x1[:,1]*0.55+0.45*y1[:,1]
 x1[:,1]=res
 x.iloc[:][[1]]=res
 x.to_csv('xgstacker_starter.sub.csv', index=None)
+v = pd.DataFrame(x1)
