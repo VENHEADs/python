@@ -18,3 +18,5 @@ hx = np.vectorize(h1)  # делаем ее активной для исполь�
 
 hx1 = np.vectorize(lambda x: int(sin(x / 5.0) * exp(x / 10.0) + 5.0 * exp(-x / 2.0)))  #вариант 3
 fx(x).astype(int)  #вариант 3
+def z(x): #вариант 4
+    return fx(x).astype(int)
