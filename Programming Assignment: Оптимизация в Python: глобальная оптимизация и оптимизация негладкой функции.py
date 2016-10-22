@@ -12,3 +12,8 @@ plt.plot(x, fx(x)) #выводим график
 plt.show() #выводим
 bounds = [(1,30)]
 scipy.optimize.differential_evolution(fx,bounds) # алгоритм дифференциальной эволюции
+def h1(x):
+    return int(fx(x))  # создаем функцию новую
+hx = np.vectorize(h1)  # делаем ее активной для использования с помощью более чем 1 переменной
+
+hx1 = np.vectorize(lambda x: int(sin(x / 5.0) * exp(x / 10.0) + 5.0 * exp(-x / 2.0)))  #вариант 2
