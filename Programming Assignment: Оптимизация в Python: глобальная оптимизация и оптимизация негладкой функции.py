@@ -16,4 +16,5 @@ def h1(x):
     return int(fx(x))  # создаем функцию новую
 hx = np.vectorize(h1)  # делаем ее активной для использования с помощью более чем 1 переменной
 
-hx1 = np.vectorize(lambda x: int(sin(x / 5.0) * exp(x / 10.0) + 5.0 * exp(-x / 2.0)))  #вариант 2
+hx1 = np.vectorize(lambda x: int(sin(x / 5.0) * exp(x / 10.0) + 5.0 * exp(-x / 2.0)))  #вариант 3
+fx(x).astype(int)  #вариант 3
