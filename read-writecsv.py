@@ -9,12 +9,16 @@ from math import exp, log
 import os
 from os import listdir
 import csv
-x = pd.read_csv('111.csv', header=0)
-y = pd.read_csv('222.csv', header=0)
+x = pd.read_csv('x111.csv', header=0) # base8_nr900_p10¬_cleaned
+y = pd.read_csv('x222.csv', header=0) #submission_5fold-average-xgb_1146.10852_2016-10-13-02-40
+z = pd.read_csv('x333.csv', header=0) #genetic gpsubmission
+
 x1 = np.asarray(x)
 y1 = np.asarray(y)
-res = x1[:,1]*0.55+0.45*y1[:,1]
+z1 = np.asarray(z)
+res = x1[:,1]*0.46+0.46*y1[:,1]+0.08*z1[:,1]
+
 x1[:,1]=res
 x.iloc[:][[1]]=res
-x.to_csv('xgstacker_starter.sub.csv', index=None)
+x.to_csv('av0.46_0.46_0.08.csv', index=None)
 v = pd.DataFrame(x1)
