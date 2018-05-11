@@ -14,3 +14,5 @@ The results are presented
 To use it you need to add flickr 25000 set folder inside static folder
 Just run the python app.py in the folder with it
 https://www.youtube.com/watch?v=gymnASuGCkc&feature=youtu.be - demo
+
+https://yadi.sk/d/pHEgVJkf3VjvN2 - all files but with no pictures set (mirflickr folder in static folder - which is 25K data set from flickr)
