@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pictures Similiarity | Valeriy Babushkin </title>
+
+
+
+
+      <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+
+</head>
+
+
+
+
+<h1>Pictures similiarity</h1><br><br><br><br>
+<h2 style="text-align:center">By: Valeriy Babushkin </h2>
+		<canvas id="canvas_2" width="0" height="0" style="border:0px solid; float: left; margin: 0px; margin-top:0px;  border-radius: 0px; cursor: crosshair;"></canvas>
+
+<div id="debug" style="margin:65px; margin-top:100px;"></div>
+
+
+
+
+
+
+		<div style="margin-left:150px; margin-top:320px; float:left; position:absolute;">
+
+			<a href="#" class="myButton">
+                <span style=" font-weight: 400; font-family: 'Open Sans', Helvetica;	"> Predict </span></a>
+		</div>
+
+		<div >
+			<h1 id="result" style="margin-right:20px; margin-top:400px;float:left;"><span> </span></h1>
+		</div>
+
+
+
+
+
+  		<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<center>
+		<div style="margin-left:250px; margin-top:400px; float:left; position:absolute;">
+
+			<script type="text/javascript">
+	   		$(".myButton").click(function(){
+	   			var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	   			var canvasObj = document.getElementById("canvas_2");
+	   			var img = canvasObj.toDataURL();
+
+
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/predict/",
+	   				data: img,
+	   				success: function(data){
+	   				    console.log('!!!', data);
+	   					$('#result').text(' Predicted Output: '+ data);
+                        var imgArray = data.split(' ');
+
+
+
+	   					var img_11 = document.getElementById("image_1");
+                        img_11.setAttribute("src","/static/mirflickr/"+imgArray[0]);
+
+                        var img_22 = document.getElementById("image_2");
+                        img_22.setAttribute("src","/static/mirflickr/"+imgArray[1]);
+
+                        var img_33 = document.getElementById("image_3");
+                        img_33.setAttribute("src","/static/mirflickr/"+imgArray[2]);
+
+                        var img_44 = document.getElementById("image_4");
+                        img_44.setAttribute("src","/static/mirflickr/"+imgArray[3]);
+
+                        var img_44 = document.getElementById("image_5");
+                        img_44.setAttribute("src","/static/mirflickr/"+imgArray[4]);
+	   				}
+
+	   			});
+	   		});
+
+
+	   </script>
+</div>
+</center>
+		<div style="margin-left:250px; margin-top:300px; float:left; position:absolute;">
+
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload  >
+    </form>
+					</div>
+
+
+<center>
+		<div style="margin-left:50px; margin-top:20px; float:left; position:absolute;">
+
+		<img src="/static/upload_img.png" alt="pic1" width="200" height="200" id="image_1">
+        <img src="/static/upload_img.png" alt="pic1" width="200" height="200" id="image_2">
+        <img src="/static/upload_img.png" alt="pic1" width="200" height="200" id="image_3">
+        <img src="/static/upload_img.png" alt="pic1" width="200" height="200" id="image_4">
+        <img src="/static/upload_img.png" alt="pic1" width="200" height="200" id="image_5">
+
+           </div>
+    </center>
+
+
+</html>
