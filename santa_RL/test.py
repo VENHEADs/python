@@ -11,7 +11,7 @@ from config import _get_default_config
 
 config = _get_default_config()
 device = 'cuda'
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 N_ACTIONS = config.N_ACTIONS
 MAX_CAPACITY = config.MAX_CAPACITY
 DAYS_OF_MAX_CAPACITY = config.DAYS_OF_MAX_CAPACITY
@@ -24,14 +24,14 @@ except:
     pass
 
 
-def write_to_txt(value,name):
+def write_to_txt(value: object, name: object) -> object:
     with open(f"{name}.txt", "a") as myfile:
         myfile.write(f"{value}" + '\n')
 
 
 path_data = ''
 dqn = Dqn(config.n_neurons, N_ACTIONS, 0.9)
-dqn.load()
+# dqn.load()
 df_standard = np.array(pd.read_csv(path_data + 'family_data_standard_scaled.csv'))
 df = np.array(pd.read_csv(path_data + 'family_data.csv'))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

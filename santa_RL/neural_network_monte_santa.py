@@ -27,7 +27,8 @@ class Network(nn.Module):
         self.fc1 = nn.Linear(INPUT_NEURONS, n_neurons)
         self.fc2 = nn.Linear(n_neurons, n_neurons//2)
         self.fc3 = nn.Linear(n_neurons//2, n_neurons//4)
-        self.fc4 = nn.Linear(n_neurons//4, nb_action)
+        self.fc4 = nn.Linear(n_neurons//4, n_neurons//8)
+        self.fc5 = nn.Linear(n_neurons // 8, nb_action)
 
         self.bn1 = nn.BatchNorm1d(n_neurons)
         self.bn2 = nn.BatchNorm1d(n_neurons//2)
@@ -51,8 +52,9 @@ class Network(nn.Module):
         # self.eval()
         x = F.elu(self.fc1(state.cuda()))
         x = F.elu(self.fc2(x))
-        x = torch.tanh(self.fc3(x))
-        q_values = self.fc4(x)
+        x = F.elu(self.fc3(x))
+        x = torch.tanh(self.fc4(x))
+        q_values = self.fc5(x)
         return q_values
 
         # x = torch.relu(self.fc1(state.cuda()))
@@ -99,7 +101,7 @@ class Dqn(object):
 
     def select_max_action(self, state, mask):
         output = (self.model(state) + mask.cuda())
-        return torch.max(output, dim=1)[1]
+        return torch.max(output, dim=1)[1].detach().cpu(), output.detach().cpu().max(1)[0].numpy()[0]
 
     def select_action(self, state, mask):
         probs = F.softmax(self.model(state) + mask.cuda(), dim=1)

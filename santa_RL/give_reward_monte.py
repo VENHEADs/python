@@ -4,7 +4,7 @@ from reward_calc import calc_reward
 from config import _get_default_config
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 config = _get_default_config()
 N_ACTIONS = config.N_ACTIONS
 MAX_CAPACITY = config.MAX_CAPACITY
@@ -16,7 +16,7 @@ GAMMA = config.gamma
 
 def multiply(value):
     number, power = value
-    return number * GAMMA ** (power-1)
+    return number * GAMMA ** (power - 1)
 
 
 def summa_(value):
@@ -32,10 +32,11 @@ def give_reward(state, dqn, population_dict, df, df_standard, final_reward, epis
     episode_counter = 0
     number_episodes = min(episodes, len(indexes_zero))
     episodes_indexes = list(np.random.choice(indexes_zero, size=number_episodes, replace=False))
-    seq_rewards = [[final_reward, 1]]
-    for position in episodes_indexes:
+    seq_rewards = []  # to store Gt and index t
+    reward_list = [[final_reward, 1]]  # to store reward Rt and index t
+    for position in episodes_indexes:  # not allocated families
         mask_local = torch.zeros((1, N_ACTIONS))
-        current_row = df[position]
+        current_row = df[position]  # take not allocated family
         current_row = np.array(current_row[1:N_ACTIONS + 1].tolist() + [current_row[-1]])
         days = current_row[:-1]
         n_members = current_row[-1]
@@ -46,9 +47,10 @@ def give_reward(state, dqn, population_dict, df, df_standard, final_reward, epis
         data = torch.Tensor(df_standard[position][1:]).unsqueeze(0)
         nn_state = torch.cat((data, state_local), dim=1)
         # if blocked != N_ACTIONS:
-        action = dqn.select_action(nn_state, mask_local).detach().cpu()
+        action, model_output = dqn.select_max_action(nn_state, mask_local)
         array_actions = action.numpy()
         action = action.numpy()[0]
+
         if action != N_ACTIONS - 1:
             day = current_row[:-1][action]
         else:
@@ -58,15 +60,14 @@ def give_reward(state, dqn, population_dict, df, df_standard, final_reward, epis
             array_actions = [999]
 
         pop_dict_local[day] += n_members
-        state_local[0, position + day - 1] += n_members / MAX_CAPACITY
+        state_local[0, position + day - 1] += n_members / MAX_CAPACITY  # update state
         state_local[0, position] = (day - 50.5) / 29.8
 
+        g_t = np.sum(list(map(multiply, reward_list))) + GAMMA ** (episode_counter + 1) * model_output
+        seq_rewards.append([g_t, episode_counter + 1])
         reward, penalty = calc_reward(array_actions, n_members)
         reward /= REWARD_SCALE
-
-        final_reward += reward * GAMMA ** (1+episode_counter)
         episode_counter += 1
-        seq_rewards.append([final_reward, 1+episode_counter])
+        reward_list.append([reward, 1 + episode_counter])
 
-    # return (1-GAMMA)*np.sum(list(map(multiply, seq_rewards)))
-    return np.sum(list(map(summa_, seq_rewards)))/len(seq_rewards)
+    return (1 - GAMMA) * np.sum(list(map(multiply, seq_rewards)))
