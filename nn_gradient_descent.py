@@ -1,3 +1,20 @@
+import numpy as np
+from sklearn.preprocessing import scale
+
+X = np.array([[1,4,6,3],[5,3,2,5],[2,5,3,-2],[4,5,2,-8]])
+y = np.array([0,0,1,1]).reshape((-1,1))
+X = scale(X)
+
+def loss(true,predicts, deriv = False):
+    if deriv:
+        return -true/predicts + (1-true)/(1-predicts)
+    return -1*(true *np.log(predicts) + (1-true)*np.log(1-predicts))
+
+def sigmoid(x, deriv = False):
+    if deriv:
+        return x*(1-x)
+    return 1/(1+np.exp(-x))
+
 neurons = 64
 weight_1 = np.random.normal(size = (4,neurons))
 weight_2 = np.random.normal(size = (neurons,1))
@@ -26,5 +43,3 @@ for e in range(2000):
 
 #     if  e % 1000 == 0:
 #         print(log_loss)
-
-print(layer_2)
