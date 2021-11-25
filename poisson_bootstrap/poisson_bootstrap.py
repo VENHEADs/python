@@ -27,9 +27,9 @@ def poisson_bootstrap_tp_fp_fn_tn(
     TN = np.zeros((N_bootstraps))
     for current_label, current_predict, weight, index in data:
         np.random.seed(index)
-        current_predict += np.random.normal(0,0.0125,1)
+        current_predict += np.random.normal(0,0.0125,1) # this can be replaced with precalc noise
         current_predict = int(np.clip(current_predict,0,1) >= threshold)
-        p_sample = np.random.poisson(1, N_bootstraps) * weight
+        p_sample = np.random.poisson(1, N_bootstraps) * weight # this can be replaced with precalc poisson
         
         if current_label == 1 and current_predict == 1:
             TP += p_sample
